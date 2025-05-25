@@ -42,19 +42,19 @@ const NotFoundPage = () => {
             <div className="pt-4">
               <p className="text-gray-400 text-sm mb-2">Looking for something specific?</p>
               <div className="flex items-center space-x-4 text-gray-400 text-sm">
-                <Link to="/dashboard/clients" className="hover:text-white transition-colors">
+                <Link to="/clients" className="hover:text-white transition-colors">
                   Clients
                 </Link>
                 <span>•</span>
-                <Link to="/dashboard/templates" className="hover:text-white transition-colors">
+                <Link to="/templates" className="hover:text-white transition-colors">
                   Templates
                 </Link>
                 <span>•</span>
-                <Link to="/dashboard/messages" className="hover:text-white transition-colors">
+                <Link to="/messages" className="hover:text-white transition-colors">
                   Messages
                 </Link>
                 <span>•</span>
-                <Link to="/dashboard/profile" className="hover:text-white transition-colors">
+                <Link to="/profile" className="hover:text-white transition-colors">
                   Profile
                 </Link>
               </div>

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, Mail, Lock, ArrowLeft } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -13,15 +14,18 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const {login} = useAuth()
+
   const handleLogin = async () => {
     try {
       setError(null);
       const res = await api.post("/auth/login", { email, password });
       const token = res.data.token;
-      localStorage.setItem("token", token);
+      const user = res.data.user;
+      
 
-      const userRes = await api.get("/auth/me");
-      const user = userRes.data;
+      login(token,user)
+      console.log("Logged in user:", user);
 
       if (!user.languageId) {
         navigate("/select-language");

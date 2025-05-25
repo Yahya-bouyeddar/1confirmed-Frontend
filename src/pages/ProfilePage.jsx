@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,14 +23,52 @@ import {
   Shield,
   Camera,
   Save,
+  Loader,
+  LoaderCircle,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import useLanguages from "../hooks/useLanguages";
+import { useState } from "react";
+import api from "../lib/api";
 
 const ProfilePage = () => {
+  const { user, updateUser } = useAuth();
+
+  const [profile, setProfile] = useState(user);
+  const [isUpdatePending, setUpdatePending] = useState(false);
+
+  const { data: languages, isLoading } = useLanguages();
+
+  if (isLoading) {
+    return <div className="text-white">Loading languages...</div>;
+  }
+
+  const handleChange = (key, value) => {
+    setProfile((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const saveProfile = async () => {
+    try {
+      setUpdatePending(true);
+      await api.post(`/users/${user.id}`, profile);
+      updateUser(profile);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      alert("Failed to update profile. Please try again.");
+    }
+    setUpdatePending(false);
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Profile</h1>
-        <p className="text-gray-400">Manage your account settings and preferences</p>
+        <p className="text-gray-400">
+          Manage your account settings and preferences
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -59,7 +96,7 @@ const ProfilePage = () => {
               </Button>
             </div>
             <div>
-              <h3 className="text-white font-medium">John Doe</h3>
+              <h3 className="text-white font-medium">{user.agencyName}</h3>
               <p className="text-gray-400 text-sm">Real Estate Agent</p>
             </div>
             <Button variant="outline" className="border-gray-600">
@@ -72,56 +109,51 @@ const ProfilePage = () => {
         <div className="lg:col-span-2 space-y-6">
           <Card className="bg-gray-800/50 border-gray-700">
             <CardHeader>
-              <CardTitle className="text-white">Personal Information</CardTitle>
+              <CardTitle className="text-white">Account Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="firstName" className="text-gray-300">First Name</Label>
+                  <Label htmlFor="agencyName" className="text-gray-300">
+                    Agency Name
+                  </Label>
                   <Input
-                    id="firstName"
-                    defaultValue="John"
+                    id="agencyName"
+                    onChange={(e) => handleChange("agencyName", e.target.value)}
+                    defaultValue={user.agencyName}
                     className="bg-gray-700 border-gray-600 text-white"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <Label htmlFor="lastName" className="text-gray-300">Last Name</Label>
                   <Input
                     id="lastName"
                     defaultValue="Doe"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
-                </div>
+                </div> */}
               </div>
-              
+
               <div>
-                <Label htmlFor="email" className="text-gray-300">Email</Label>
+                <Label htmlFor="email" className="text-gray-300">
+                  Email
+                </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                   <Input
                     id="email"
                     type="email"
-                    defaultValue="john.doe@example.com"
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    defaultValue={user.email}
                     className="pl-10 bg-gray-700 border-gray-600 text-white"
                   />
                 </div>
               </div>
-              
+
               <div>
-                <Label htmlFor="phone" className="text-gray-300">Phone</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                  <Input
-                    id="phone"
-                    type="tel"
-                    defaultValue="+1 (555) 123-4567"
-                    className="pl-10 bg-gray-700 border-gray-600 text-white"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="bio" className="text-gray-300">Bio</Label>
+                <Label htmlFor="bio" className="text-gray-300">
+                  Bio
+                </Label>
                 <Textarea
                   id="bio"
                   placeholder="Tell us about yourself..."
@@ -129,10 +161,75 @@ const ProfilePage = () => {
                   className="bg-gray-700 border-gray-600 text-white"
                 />
               </div>
+              <div>
+                <Label
+                  htmlFor="language"
+                  className="text-gray-300 mb-2 inline-block"
+                >
+                  Language
+                </Label>
+                <Select
+                  defaultValue={user.languageId}
+                  onValueChange={(value) => handleChange("languageId", value)}
+                >
+                  <SelectTrigger className="bg-gray-700 border-gray-600">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600">
+                    {languages.map((lang) => (
+                      <SelectItem key={lang.id} value={lang.id}>
+                        {lang.language}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </CardContent>
           </Card>
+          {/* <Card className="bg-gray-800/50 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center">
+              <Shield className="w-5 h-5 mr-2" />
+              Account Settings
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            
+            
+            {/* <div>
+              <Label htmlFor="timezone" className="text-gray-300">Timezone</Label>
+              <Select defaultValue="est">
+                <SelectTrigger className="bg-gray-700 border-gray-600">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-700 border-gray-600">
+                  <SelectItem value="est">Eastern Time (UTC-5)</SelectItem>
+                  <SelectItem value="cst">Central Time (UTC-6)</SelectItem>
+                  <SelectItem value="mst">Mountain Time (UTC-7)</SelectItem>
+                  <SelectItem value="pst">Pacific Time (UTC-8)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div> */}
 
-          <Card className="bg-gray-800/50 border-gray-700">
+          {/* <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-300">Two-Factor Authentication</p>
+                <p className="text-gray-500 text-sm">Add an extra layer of security</p>
+              </div>
+              <Switch />
+            </div> */}
+
+          {/* <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-300">Login Notifications</p>
+                <p className="text-gray-500 text-sm">Get notified of new logins</p>
+              </div>
+              <Switch defaultChecked />
+            </div> */}
+          {/* </CardContent> */}
+          {/* </Card>  */}
+
+          {/* <Card className="bg-gray-800/50 border-gray-700">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
                 <Building className="w-5 h-5 mr-2" />
@@ -182,13 +279,13 @@ const ProfilePage = () => {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </div>
 
       {/* Preferences */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-gray-800/50 border-gray-700">
+        {/* <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
               <Bell className="w-5 h-5 mr-2" />
@@ -228,69 +325,21 @@ const ProfilePage = () => {
               <Switch defaultChecked />
             </div>
           </CardContent>
-        </Card>
-
-        <Card className="bg-gray-800/50 border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <Shield className="w-5 h-5 mr-2" />
-              Account Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="language" className="text-gray-300">Language</Label>
-              <Select defaultValue="en">
-                <SelectTrigger className="bg-gray-700 border-gray-600">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-700 border-gray-600">
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="es">Spanish</SelectItem>
-                  <SelectItem value="fr">French</SelectItem>
-                  <SelectItem value="pt">Portuguese</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <Label htmlFor="timezone" className="text-gray-300">Timezone</Label>
-              <Select defaultValue="est">
-                <SelectTrigger className="bg-gray-700 border-gray-600">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-700 border-gray-600">
-                  <SelectItem value="est">Eastern Time (UTC-5)</SelectItem>
-                  <SelectItem value="cst">Central Time (UTC-6)</SelectItem>
-                  <SelectItem value="mst">Mountain Time (UTC-7)</SelectItem>
-                  <SelectItem value="pst">Pacific Time (UTC-8)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-300">Two-Factor Authentication</p>
-                <p className="text-gray-500 text-sm">Add an extra layer of security</p>
-              </div>
-              <Switch />
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-300">Login Notifications</p>
-                <p className="text-gray-500 text-sm">Get notified of new logins</p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-          </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-          <Save className="w-4 h-4 mr-2" />
+        <Button
+          onClick={saveProfile}
+          disabled={isUpdatePending}
+          className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+        >
+          {isUpdatePending ? (
+            <LoaderCircle className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <Save className="w-4 h-4 mr-2" />
+          )}
           Save Changes
         </Button>
       </div>

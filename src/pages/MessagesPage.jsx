@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,74 +30,94 @@ import {
   AlertCircle,
   Calendar,
 } from "lucide-react";
+import api from "../lib/api";
 
 const MessagesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterDate, setFilterDate] = useState("all");
+  const [messages, setMessages] = useState([]);
 
-  const messages = [
-    {
-      id: 1,
-      recipient: "Sarah Johnson",
-      phone: "+1 (555) 123-4567",
-      template: "Property Visit Reminder",
-      content: "Hi Sarah, this is a reminder about your property visit tomorrow at 2:00 PM for 123 Main St. Please let me know if you need to reschedule.",
-      status: "delivered",
-      sentAt: "2024-01-15 14:30",
-      deliveredAt: "2024-01-15 14:31",
-      readAt: "2024-01-15 14:45",
-      cost: 1,
-    },
-    {
-      id: 2,
-      recipient: "Michael Chen",
-      phone: "+1 (555) 234-5678",
-      template: "New Listing Alert",
-      content: "Hello Michael, I have a new property that matches your criteria! 3BR House in Downtown for $750,000. Would you like to schedule a viewing?",
-      status: "read",
-      sentAt: "2024-01-15 13:15",
-      deliveredAt: "2024-01-15 13:16",
-      readAt: "2024-01-15 13:20",
-      cost: 1,
-    },
-    {
-      id: 3,
-      recipient: "Emma Williams",
-      phone: "+1 (555) 345-6789",
-      template: "Contract Follow-up",
-      content: "Hi Emma, I wanted to follow up on the contract for 456 Oak Ave. Please review and let me know if you have any questions.",
-      status: "pending",
-      sentAt: "2024-01-15 12:00",
-      deliveredAt: null,
-      readAt: null,
-      cost: 1,
-    },
-    {
-      id: 4,
-      recipient: "David Brown",
-      phone: "+1 (555) 456-7890",
-      template: "Welcome Message",
-      content: "Hi David, welcome to Elite Properties! I'm here to help you find the perfect property. When can we schedule a meeting?",
-      status: "failed",
-      sentAt: "2024-01-15 11:30",
-      deliveredAt: null,
-      readAt: null,
-      cost: 0,
-    },
-    {
-      id: 5,
-      recipient: "Lisa Anderson",
-      phone: "+1 (555) 567-8901",
-      template: "Price Update",
-      content: "Hi Lisa, there's been a price update for the property at 789 Pine St. The new price is $280,000. Would you like to discuss this?",
-      status: "delivered",
-      sentAt: "2024-01-15 10:15",
-      deliveredAt: "2024-01-15 10:16",
-      readAt: null,
-      cost: 1,
-    },
-  ];
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        // Simulating an API call to fetch messages
+        const response = await api.get("/messages"); // Replace with your actual API endpoint
+
+        console.log("Fetched messages:", response.data);
+
+        setMessages(response.data);
+      } catch (error) {
+        console.error("Failed to fetch messages:", error);
+      }
+    };
+
+    fetchMessages();
+  }, []);
+
+  // const messages = [
+  //   {
+  //     id: 1,
+  //     recipient: "Sarah Johnson",
+  //     phone: "+1 (555) 123-4567",
+  //     template: "Property Visit Reminder",
+  //     content: "Hi Sarah, this is a reminder about your property visit tomorrow at 2:00 PM for 123 Main St. Please let me know if you need to reschedule.",
+  //     status: "delivered",
+  //     sentAt: "2024-01-15 14:30",
+  //     deliveredAt: "2024-01-15 14:31",
+  //     readAt: "2024-01-15 14:45",
+  //     cost: 1,
+  //   },
+  //   {
+  //     id: 2,
+  //     recipient: "Michael Chen",
+  //     phone: "+1 (555) 234-5678",
+  //     template: "New Listing Alert",
+  //     content: "Hello Michael, I have a new property that matches your criteria! 3BR House in Downtown for $750,000. Would you like to schedule a viewing?",
+  //     status: "read",
+  //     sentAt: "2024-01-15 13:15",
+  //     deliveredAt: "2024-01-15 13:16",
+  //     readAt: "2024-01-15 13:20",
+  //     cost: 1,
+  //   },
+  //   {
+  //     id: 3,
+  //     recipient: "Emma Williams",
+  //     phone: "+1 (555) 345-6789",
+  //     template: "Contract Follow-up",
+  //     content: "Hi Emma, I wanted to follow up on the contract for 456 Oak Ave. Please review and let me know if you have any questions.",
+  //     status: "pending",
+  //     sentAt: "2024-01-15 12:00",
+  //     deliveredAt: null,
+  //     readAt: null,
+  //     cost: 1,
+  //   },
+  //   {
+  //     id: 4,
+  //     recipient: "David Brown",
+  //     phone: "+1 (555) 456-7890",
+  //     template: "Welcome Message",
+  //     content: "Hi David, welcome to Elite Properties! I'm here to help you find the perfect property. When can we schedule a meeting?",
+  //     status: "failed",
+  //     sentAt: "2024-01-15 11:30",
+  //     deliveredAt: null,
+  //     readAt: null,
+  //     cost: 0,
+  //   },
+  //   {
+  //     id: 5,
+  //     recipient: "Lisa Anderson",
+  //     phone: "+1 (555) 567-8901",
+  //     template: "Price Update",
+  //     content: "Hi Lisa, there's been a price update for the property at 789 Pine St. The new price is $280,000. Would you like to discuss this?",
+  //     status: "delivered",
+  //     sentAt: "2024-01-15 10:15",
+  //     deliveredAt: "2024-01-15 10:16",
+  //     readAt: null,
+  //     cost: 1,
+  //   },
+  // ];
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -130,9 +150,9 @@ const MessagesPage = () => {
   };
 
   const filteredMessages = messages.filter((message) => {
-    const matchesSearch = message.recipient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         message.template.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         message.content.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = message.phone.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                         message.templateId.toLowerCase().includes(searchTerm?.toLowerCase()) 
+                        ;
     const matchesStatus = filterStatus === "all" || message.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -146,7 +166,7 @@ const MessagesPage = () => {
     },
     {
       title: "Delivered",
-      value: messages.filter(m => m.status === "delivered" || m.status === "read").length.toString(),
+      value: messages.filter(m => m.status === "delivered").length.toString(),
       icon: CheckCircle,
       color: "text-green-400",
     },
@@ -255,12 +275,10 @@ const MessagesPage = () => {
           <Table>
             <TableHeader>
               <TableRow className="border-gray-700">
-                <TableHead className="text-gray-400">Recipient</TableHead>
-                <TableHead className="text-gray-400">Template</TableHead>
+                <TableHead className="text-gray-400">Phone</TableHead>
+                <TableHead className="text-gray-400">Template ID</TableHead>
                 <TableHead className="text-gray-400">Status</TableHead>
                 <TableHead className="text-gray-400">Sent At</TableHead>
-                <TableHead className="text-gray-400">Cost</TableHead>
-                <TableHead className="text-gray-400">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -268,11 +286,10 @@ const MessagesPage = () => {
                 <TableRow key={message.id} className="border-gray-700">
                   <TableCell>
                     <div>
-                      <p className="text-white font-medium">{message.recipient}</p>
-                      <p className="text-gray-400 text-sm">{message.phone}</p>
+                      <p className="text-white font-medium">{message.phone}</p>
                     </div>
                   </TableCell>
-                  <TableCell className="text-gray-300">{message.template}</TableCell>
+                  <TableCell className="text-gray-300">{message.templateId}</TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       {getStatusIcon(message.status)}
@@ -282,17 +299,11 @@ const MessagesPage = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div>
-                      <p className="text-gray-300">{message.sentAt}</p>
-                      {message.deliveredAt && (
-                        <p className="text-gray-500 text-xs">Delivered: {message.deliveredAt}</p>
-                      )}
-                      {message.readAt && (
-                        <p className="text-gray-500 text-xs">Read: {message.readAt}</p>
-                      )}
-                    </div>
+                   
+                        <p className="text-gray-500 text-xs">Delivered: {message.createdAt}</p>
+                    
                   </TableCell>
-                  <TableCell className="text-gray-300">{message.cost} credit</TableCell>
+              
                   <TableCell>
                     <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
                       <Eye className="w-4 h-4" />

@@ -4,31 +4,13 @@ import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Globe, ArrowRight, Check } from "lucide-react";
+import useLanguages from "../hooks/useLanguages";
 
 const SelectLanguagePage = () => {
   const navigate = useNavigate();
-  const [languages, setLanguages] = useState([]);
+  const { data:languages, isLoading } = useLanguages();
   const [selectedLanguage, setSelectedLanguage] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchLanguages = async () => {
-      try {
-        const res = await api.get("/languages");
-        setLanguages(res.data.data);
-
-        const userRes = await api.get("/auth/me");
-        if (userRes.data.languageId) {
-          navigate("/dashboard");
-        }
-      } catch (err) {
-        console.error("Erreur chargement langues:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLanguages();
-  }, [navigate]);
+  
 
   const handleContinue = async () => {
     try {
@@ -42,7 +24,7 @@ const SelectLanguagePage = () => {
     }
   };
 
-  if (loading) return <p className="text-white text-center">Chargement...</p>;
+  if (isLoading) return <p className="text-white text-center">Chargement...</p>;
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
@@ -54,7 +36,9 @@ const SelectLanguagePage = () => {
                 <Globe className="w-8 h-8 text-white" />
               </div>
             </div>
-            <CardTitle className="text-3xl text-white mb-2">Choose Your Language</CardTitle>
+            <CardTitle className="text-3xl text-white mb-2">
+              Choose Your Language
+            </CardTitle>
             <p className="text-gray-400 text-lg">
               Select your preferred language to personalize ImmoConnect
             </p>
@@ -75,7 +59,10 @@ const SelectLanguagePage = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-3">
                       <div>
-                        <h3 className="text-white font-semibold">{lang.language}</h3>
+                        <h3 className="text-white font-semibold">
+                          {lang.language}
+
+                        </h3>
                       </div>
                       {selectedLanguage === lang.id && (
                         <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
@@ -83,7 +70,7 @@ const SelectLanguagePage = () => {
                         </div>
                       )}
                     </div>
-                    <p className="text-gray-400 text-sm">{lang.flag}</p>
+                    {/* <p className="text-gray-400 text-sm">{lang.flag}</p> */}
                   </CardContent>
                 </Card>
               ))}

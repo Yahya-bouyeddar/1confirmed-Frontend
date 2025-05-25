@@ -57,10 +57,18 @@ const SendMessagePage = () => {
     if (storedTemplate) {
       const parsed = JSON.parse(storedTemplate);
       setSelectedTemplate(parsed);
-      console.log({ selectedTemplate: parsed });
+      console.log({ selectedTemplate: parsed, variables:parsed.variables });
 
-      const vars = {};
-      parsed.variables?.forEach((v) => (vars[v] = ""));
+      const vars = parsed.variables.reduce((prev, curr) => {
+          const value = curr.name
+          const key = curr.variable
+
+          return { ...prev, [key]: value ?? ""};
+
+      },{})
+
+     console.log({ vars });
+
       setTemplateVariables(vars);
       setGlobalData({});
       setCatchData({});
@@ -84,14 +92,13 @@ const SendMessagePage = () => {
 
   const handleSend = async () => {
     const client = clients.find((c) => c.id.toString() === selectedClientId);
-    if (!client || !selectedTemplate) return;
+    if (!client || !selectedTemplate) return;   
 
     const payload = {
       phone: client.phone,
       templateId: selectedTemplate.id,
-      template_account_flow_id:
-        selectedTemplate.template_account_flow_id || selectedTemplate.id,
-      languageId: user?.languageId || 1,
+      countryId: 1,
+      languageId: 3,
       name: user?.agencyName || "Agence Immobilière",
       data: templateVariables,
       globalData,
@@ -102,7 +109,7 @@ const SendMessagePage = () => {
       setSending(true);
       await api.post("/messages", payload);
       alert("Message sent successfully!");
-      navigate("/dashboard/messages");
+      navigate("/messages");
     } catch (err) {
       console.error("Error sending message", err);
       alert("Error sending message");
@@ -159,13 +166,13 @@ const SendMessagePage = () => {
           {/* Dynamic template fields */}
           {[
             {
-              label: "Variables",
-              source: selectedTemplate?.variables.map((v) => v?.name || "--"),
+              label: "Information",
+              source: selectedTemplate?.variables.map((v) => v?.variable || "--"),
               state: templateVariables,
               setter: setTemplateVariables,
             },
             {
-              label: "Global Variables",
+              label: " ",
               source: selectedTemplate?.global_variables?.map(
                 (g) => g?.variable || "--"
               ),
@@ -173,7 +180,7 @@ const SendMessagePage = () => {
               setter: setGlobalData,
             },
             {
-              label: "Catch Data",
+              label: "User Feedback",
               source: selectedTemplate?.catch_data?.map((c) =>
                 c.name.toLowerCase()
               ),

@@ -21,37 +21,37 @@ const menuItems = [
   {
     title: "Clients",
     icon: Users,
-    href: "/dashboard/clients",
+    href: "/clients",
   },
+  // {
+  //   title: "Send Message",
+  //   icon: Send,
+  //   href: "/send-message",
+  // },
   {
     title: "Send Message",
-    icon: Send,
-    href: "/dashboard/send-message",
-  },
-  {
-    title: "Templates",
     icon: FileText,
-    href: "/dashboard/templates",
+    href: "/templates",
   },
   {
     title: "Messages",
     icon: MessageSquare,
-    href: "/dashboard/messages",
+    href: "/messages",
   },
   {
     title: "Credits",
     icon: CreditCard,
-    href: "/dashboard/credits",
+    href: "/credits",
   },
   {
     title: "Profile",
     icon: User,
-    href: "/dashboard/profile",
+    href: "/profile",
   },
   {
-    title: "Settings",
+    title: "Change Password",
     icon: Settings,
-    href: "/dashboard/change-password",
+    href: "/change-password",
   },
 ];
 

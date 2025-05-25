@@ -18,6 +18,8 @@ import ChangePasswordPage from "./pages/ChangePasswordPage";
 import SelectLanguagePage from "./pages/SelectLanguagePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import DashboardLayout from "./components/DashboardLayout";
+import { GuestRoute } from "./components/auth/GuestRoute";
+import { PrivateRoute } from "./components/auth/PrivateRoute";
 
 const App = () => (
   <div className="dark">
@@ -28,21 +30,23 @@ const App = () => (
         <div className="min-h-screen bg-background text-foreground">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/select-language" element={<SelectLanguagePage />} />
+            <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+            <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute> }/>
+            <Route path="/select-language" element={<PrivateRoute><SelectLanguagePage /></PrivateRoute>} />
             
             {/* Dashboard routes with layout */}
-            <Route path="/dashboard" element={<DashboardLayout />}>
-              <Route index element={<DashboardPage />} />
-              <Route path="clients" element={<ClientsPage />} />
-              <Route path="send-message" element={<SendMessagePage />} />
-              <Route path="templates" element={<TemplatesPage />} />
-              <Route path="messages" element={<MessagesPage />} />
-              <Route path="credits" element={<CreditsPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="change-password" element={<ChangePasswordPage />} />
-            </Route>
+            <Route path="/" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>  
+              <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+              <Route path="/clients" element={<PrivateRoute><ClientsPage /></PrivateRoute>} />
+              <Route path="/send-message" element={<PrivateRoute><SendMessagePage /></PrivateRoute>} />
+              <Route path="/templates" element={<PrivateRoute><TemplatesPage /></PrivateRoute>} />
+              <Route path="/messages" element={<PrivateRoute><MessagesPage /></PrivateRoute>} />
+              <Route path="/credits" element={<PrivateRoute><CreditsPage /></PrivateRoute>} />
+              <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+              <Route path="/change-password" element={<PrivateRoute><ChangePasswordPage /></PrivateRoute>} />
+
+              </Route>
+          
             
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
