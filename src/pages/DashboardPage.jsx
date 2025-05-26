@@ -22,7 +22,6 @@ const DashboardPage = () => {
     const fetchStats = async () => {
       try {
         const res = await api.get("/dashboard/stats");
-        // Adapter le format ici selon ce que retourne ton backend
         setStats([
           {
             title: "Total Clients",
@@ -97,9 +96,7 @@ const DashboardPage = () => {
         })}
       </div>
 
-      {/* Quick Actions (inchangé) */}
-      {/* Recent Messages + Performance (inchangé) */}
-      {/* ... copie ici ton code statique comme tu as déjà fourni ... */}
+
     </div>
   );
 };

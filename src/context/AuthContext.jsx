@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    // 🔁 Redirection à faire dans les composants (avec useNavigate)
   };
 
   return (

@@ -28,7 +28,6 @@ const CreditsPage = () => {
       try {
         const resStats = await api.get("/credits");
         const resHistory = await api.get("/credits/history");
-        // console.log();
         
         setStats(resStats.data.data.credit);
         setHistory(resHistory.data);
@@ -63,7 +62,6 @@ const CreditsPage = () => {
         <p className="text-gray-400">Manage your message credits and view usage history</p>
       </div>
 
-      {/* Credits Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

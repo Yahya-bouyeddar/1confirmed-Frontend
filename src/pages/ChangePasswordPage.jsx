@@ -96,7 +96,6 @@ const ChangePasswordPage = () => {
               </div>
             </div>
 
-            {/* Password Requirements */}
             <div className="space-y-2">
               <h4 className="text-gray-300 font-medium">Password Requirements</h4>
               <div className="space-y-2">
@@ -115,8 +114,7 @@ const ChangePasswordPage = () => {
               </div>
             </div>
 
-            {/* Confirm Password */}
-            <div className="space-y-2">
+           <div className="space-y-2">
               <Label htmlFor="confirmPassword" className="text-gray-300">
                 Confirm New Password
               </Label>
@@ -154,7 +152,6 @@ const ChangePasswordPage = () => {
               )}
             </div>
 
-            {/* Security Alert */}
             <Alert className="bg-blue-500/20 border-blue-500/50">
               <Shield className="h-4 w-4 text-blue-400" />
               <AlertDescription className="text-blue-200">
@@ -162,7 +159,6 @@ const ChangePasswordPage = () => {
               </AlertDescription>
             </Alert>
 
-            {/* Action Buttons */}
             <div className="flex justify-end space-x-4">
               <Button variant="outline" className="border-gray-600">
                 Cancel
@@ -177,7 +173,6 @@ const ChangePasswordPage = () => {
           </CardContent>
         </Card>
 
-        {/* Security Tips */}
         <Card className="bg-gray-800/50 border-gray-700 mt-6">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
